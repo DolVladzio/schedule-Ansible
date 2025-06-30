@@ -4,12 +4,6 @@
   roles:
     - gcp-ops-agent
 
-- name: Configure reverse proxy
-  hosts: reverse-proxy
-  become: yes
-  roles:
-    - reverse_proxy
-
 - name: Deploy Redis Service
   hosts: redis
   become: yes
