@@ -6,42 +6,28 @@ namespaces: [
     }
 ]
 configmaps: [
-    {
-      "name": "redis-config",
-      "data": {
-        "timeout": "1440",
-        "maxmemory-policy": "allkeys-lru"
-      },
-      "namespace": "intproject"
+  {
+    "name": "backend-config",
+    "data": {
+      DB_HOST: "<db-url>",
+      DB_PORT: "5432",
+      DB_NAME: "maindb",
+      REDIS_HOST: "redis",
+      REDIS_PORT: "6379"
     },
-    {
-      "name": "server-config",
-      "data": {
-        "POSTGRES_URL": "jdbc:postgresql://<your-ip>:5432/maindb",
-        "REDIS_URL": "redis://redis:6379",
-        "MONGOHOST_URL": "mongo",
-        "REACT_APP_API_BASE_URL": "http://<your-ip>:31111"
-      },
-      "namespace": "intproject"
-    },
-    {
-      "name": "frontend-config",
-      "data": {
-        "REACT_APP_API_BASE_URL": "http://server:8080"
-      },
-      "namespace": "intproject"
-    }
-  ]
+    "namespace": "intproject"
+  }
+]
 secrets: [
-    {
-      "name": "mongo-secret",
-      "data": {
-        "username": "user",
-        "password": "password"
-      },
-      "namespace": "intproject"
-    }
-  ]
+  {
+    "name": "backend-secret",
+    "data": {
+      "DB_USER": "user",
+      "DB_PASSWORD": "password"
+    },
+    "namespace": "intproject"
+  }
+]
 services: [
     {
       "name": "redis",
@@ -51,20 +37,10 @@ services: [
       "target_port": 6379,
       "protocol": "TCP",
       "namespace": "intproject"
-
     },
     {
-      "name": "mongo",
-      "app": "mongo",
-      "type": "ClusterIP",
-      "port": 27017,
-      "target_port": 27017,
-      "protocol": "TCP",
-      "namespace": "intproject"
-    },
-    {
-      "name": "server",
-      "app": "server",
+      "name": "backend",
+      "app": "backend",
       "type": "NodePort",
       "port": 8080,
       "target_port": 8080,
@@ -77,8 +53,7 @@ deployments:  [
     {
       "name": "redis",
       "app": "redis",
-      "registry": "dockerhub",
-      "image": "redis",
+      "image": "redis:alpine",
       "version": "7",
       "replicas": 1,
       "port": 6379,
@@ -87,27 +62,14 @@ deployments:  [
       "namespace": "intproject"
     },
     {
-      "name": "mongo",
-      "app": "mongo",
-      "registry": "dockerhub",
-      "image": "mongo",
-      "version": "6",
-      "replicas": 1,
-      "port": 27017,
-      "config_refs": [],
-      "secret_refs": ["mongo-secret"],
-      "namespace": "intproject"
-    },
-    {
-      "name": "server",
-      "app": "server",
-      "registry": "dockerhub",
-      "image": "artamonovdima/intproject",
+      "name": "backend",
+      "app": "backend",
+      "image": "dolvladzio/backend:2025-06-23-07-05-57",
       "version": "2",
       "replicas": 1,
       "port": 8080,
-      "config_refs": ["server-config"],
-      "secret_refs": [],
+      "config_refs": ["backend-config"],
+      "secret_refs": ["backend-secret"],
       "namespace": "intproject"
     }
 ]
@@ -125,6 +87,3 @@ ingress: [
       ingress_namespace: intproject
     }
 ]
-# cluster_issuer_name: "letsencrypt-staging"change to 
-# cluster_issuer_name: "letsencrypt-production" after testing 
-# due to limits let`sencrypt`

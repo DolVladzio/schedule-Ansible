@@ -1,20 +1,3 @@
-# - name: Install Python dependencies
-#   ansible.builtin.apt:
-#     update_cache: yes
-#     pkg:
-#       - python3-pip
-#     state: present
-
-# - name: Install Python packages system-wide (PEP 668 override)
-#   ansible.builtin.pip:
-#     name:
-#       - openshift
-#       - pyyaml
-#       - kubernetes
-#     extra_args: --break-system-packages
-#     executable: pip3
-
-
 - name: Create a k8s namespace
   kubernetes.core.k8s:
     name: "{{ item.name }}"
@@ -32,15 +15,13 @@
   tags:
     - configmap
 
-
 - name: Deploy Secret
   kubernetes.core.k8s:
     state: present
-    template: "{{ role_path }}/templates/secret.yaml.j2"
+    template: "{{ role_path }}/templates/secrets.yaml.j2"
   loop: "{{ secrets }}"
   tags:
     - secret
-
 
 - name: Deploy Service
   kubernetes.core.k8s:
@@ -50,7 +31,6 @@
   tags:
     - service
 
-
 - name: Deploy Deployment
   kubernetes.core.k8s:
     state: present
@@ -58,20 +38,3 @@
   loop: "{{ deployments }}"
   tags:
     - deployment
-
-- name: Apply Ingress
-  kubernetes.core.k8s:
-    state: present
-    template: "{{ role_path }}/templates/app-ingress.yaml.j2"
-  loop: "{{ ingress }}"
-  tags:
-    - ingress
-
-- name: Apply Cert
-  kubernetes.core.k8s:
-    state: present
-    template: "{{ role_path }}/templates/app-certificate.yaml.j2"
-    namespace: "{{ namespace | default('app-ingress') }}"
-  loop: "{{ ingress }}"
-  tags:
-    - cert
