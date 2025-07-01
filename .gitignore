@@ -1,0 +1,25 @@
+# Ignore test.tf and inventory
+test.tf
+/inventory/
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore JSON files
+config.json
+keys.json
+**/config-kuber.json
+# Ignore IDE files
+.idea/
+*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Ignore dump files
+*.dump
