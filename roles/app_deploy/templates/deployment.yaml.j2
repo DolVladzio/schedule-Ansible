@@ -15,13 +15,9 @@ spec:
       labels:
         app: {{ item.app }}
     spec:
-{% if item.registry != 'dockerhub' %}
-      imagePullSecrets:
-        - name: {{ cloud_provider }}-registry-secret
-{% endif %}
       containers:
         - name: {{ item.app }}
-          image: {{ registry_urls[item.registry] }}/{{ item.image }}:{{ item.version }}
+          image: {{ item.image }}
           ports:
             - containerPort: {{ item.port }}
 {% if (item.config_refs is defined and item.config_refs | length > 0) or (item.secret_refs is defined and item.secret_refs | length > 0) %}
