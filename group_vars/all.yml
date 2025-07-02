@@ -1,9 +1,4 @@
 ---
-# Container registry URLs
-registry_urls:
-  aws: "{{ aws_account_id }}.dkr.ecr.{{ aws_region }}.amazonaws.com"
-  gcp: "gcr.io/tokyo-kingdom-459011-n6/github-actions-repo/"
-
 # List of domain names included in the certificate and ingress
 cert_domains:
   - "anfox.pp.ua"
