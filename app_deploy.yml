@@ -3,6 +3,8 @@
   hosts: localhost
   roles:
     - app_deploy
+  vars:
+    config_data: "{{ lookup('file', '../schedule-config/config.json') | from_json }}"
 
 # - name: Deploy ingress
 #   hosts: localhost
