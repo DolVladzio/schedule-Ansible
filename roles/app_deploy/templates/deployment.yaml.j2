@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: {{ item.app }}
-          image: {{ item.image }}
+          image: {% if item.registry_url is defined and item.registry_url %}{{ item.registry_url }}/{{ item.image }}{% else %}{{ item.image }}{% endif %}
           ports:
             - containerPort: {{ item.port }}
 {% if (item.config_refs is defined and item.config_refs | length > 0) or (item.secret_refs is defined and item.secret_refs | length > 0) %}
