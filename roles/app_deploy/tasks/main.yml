@@ -4,14 +4,14 @@
     api_version: v1
     kind: Namespace
     state: present
-  loop: "{{ namespaces }}"
+  loop: "{{ config_data.namespaces }}"
   tags: namespaces
 
 - name: Deploy ConfigMap
   kubernetes.core.k8s:
     state: present
     template: "{{ role_path }}/templates/configmap.yaml.j2"
-  loop: "{{ configmaps }}"
+  loop: "{{ config_data.configmaps }}"
   tags:
     - configmap
 
@@ -19,7 +19,7 @@
   kubernetes.core.k8s:
     state: present
     template: "{{ role_path }}/templates/secrets.yaml.j2"
-  loop: "{{ secrets }}"
+  loop: "{{ config_data.secrets }}"
   tags:
     - secret
 
@@ -27,7 +27,7 @@
   kubernetes.core.k8s:
     state: present
     template: "{{ role_path }}/templates/service.yaml.j2"
-  loop: "{{ services }}"
+  loop: "{{ config_data.services }}"
   tags:
     - service
 
@@ -35,6 +35,23 @@
   kubernetes.core.k8s:
     state: present
     template: "{{ role_path }}/templates/deployment.yaml.j2"
-  loop: "{{ deployments }}"
+  loop: "{{ config_data.deployments }}"
   tags:
     - deployment
+
+- name: Apply Ingress
+  kubernetes.core.k8s:
+    state: present
+    template: "{{ role_path }}/templates/app-ingress.yaml.j2"
+  loop: "{{ config_data.ingress }}"
+  tags:
+    - ingress
+
+- name: Apply Cert
+  kubernetes.core.k8s:
+    state: present
+    template: "{{ role_path }}/templates/app-certificate.yaml.j2"
+    namespace: "{{ namespace | default('app-ingress') }}"
+  loop: "{{ config_data.ingress }}"
+  tags:
+    - cert
