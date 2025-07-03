@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ item.name }}
+  namespace: {{ item.namespace }}
+  labels:
+    app: {{ item.app }}
+spec:
+  replicas: {{ item.replicas }}
+  selector:
+    matchLabels:
+      app: {{ item.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ item.app }}
+    spec:
+      containers:
+        - name: {{ item.app }}
+          image: "{% if item.registry_url is defined and item.registry_url %}{{ item.registry_url }}/{{ item.image }}{% else %}{{ item.image }}{% endif %}"
+          ports:
+            - containerPort: {{ item.port }}
+{% if (item.config_refs is defined and item.config_refs | length > 0) or (item.secret_refs is defined and item.secret_refs | length > 0) %}
+          envFrom:
+{% if item.config_refs is defined and item.config_refs | length > 0 %}
+{% for config in item.config_refs %}
+            - configMapRef:
+                name: {{ config }}
+{% endfor %}
+{% endif %}
+{% if item.secret_refs is defined and item.secret_refs | length > 0 %}
+{% for secret in item.secret_refs %}
+            - secretRef:
+                name: {{ secret }}
+{% endfor %}
+{% endif %}
+{% endif %}

@@ -1,0 +1,7 @@
+---
+# List of domain names included in the certificate and ingress
+cert_domains:
+  - "anfox.pp.ua"
+
+ingress_domains:
+  - "anfox.pp.ua"
