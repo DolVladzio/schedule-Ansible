@@ -18,6 +18,13 @@ spec:
       containers:
         - name: {{ item.app }}
           image: "{% if item.registry_url is defined and item.registry_url %}{{ item.registry_url }}/{{ item.image }}{% else %}{{ item.image }}{% endif %}"
+{% if item.name == "backend" %}
+        - name: cloud-sql-proxy
+          image: {{ cloud-sql-proxy_image }}
+          command:
+            - "/cloud_sql_proxy"
+            - "-instances={{ cloud_sql_instance }}=tcp:5432"
+{% endif %}
           ports:
             - containerPort: {{ item.port }}
 {% if (item.config_refs is defined and item.config_refs | length > 0) or (item.secret_refs is defined and item.secret_refs | length > 0) %}
