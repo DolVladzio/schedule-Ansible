@@ -17,7 +17,16 @@ spec:
     spec:
       containers:
         - name: {{ item.app }}
-          image: "{% if item.registry_url is defined and item.registry_url %}{{ item.registry_url }}/{{ item.image }}{% else %}{{ item.image }}{% endif %}"
+{% if item.name == "frontend" %}
+          image: "{{ item.registry_url }}/{{ frontend_image }}"
+{% elif item.name == "backend" %}
+          image: "{{ item.registry_url }}/{{ backend_image }}"
+          env:
+          - name: DB_HOST
+            value: {{ db_host }}
+{% else %}
+          image: "{{ item.image }}"
+{% endif %}
           ports:
             - containerPort: {{ item.port }}
 {% if (item.config_refs is defined and item.config_refs | length > 0) or (item.secret_refs is defined and item.secret_refs | length > 0) %}
