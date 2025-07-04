@@ -10,32 +10,6 @@
     name: postgresql-client
     state: present
 
-- name: Download Cloud SQL Proxy
-  become: yes
-  get_url:
-    url: "https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/{{ cloud_sql_proxy_version }}/cloud-sql-proxy.linux.amd64"
-    dest: /usr/local/bin/cloud-sql-proxy
-    mode: '0755'
-
-- name: Run Cloud SQL Proxy in background
-  become: yes
-  shell: >
-    nohup /usr/local/bin/cloud-sql-proxy
-    --private-ip
-    --address 127.0.0.1
-    --port 5432
-    {{ cloud_sql_instance }}
-    > /var/log/cloud-sql-proxy.log 2>&1 &
-  args:
-    executable: /bin/bash
-
-- name: Wait for Cloud SQL Proxy port to be open
-  become: yes
-  wait_for:
-    host: 127.0.0.1
-    port: 5432
-    timeout: 30
-
 - name: Copy DB dump to bastion VM
   copy:
     src: "{{ db_dump_file }}"
@@ -45,7 +19,7 @@
 - name: Restore PostgreSQL database from dump
   become: yes
   command: >
-    psql -h 127.0.0.1
+    psql -h {{ db_host }}
           -U {{ db_user }}
           -d {{ db_name }}
           -f {{ db_dump_file_dest }}
