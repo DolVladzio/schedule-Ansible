@@ -13,8 +13,8 @@
   roles:
     - app_deploy
   vars:
+    cloud_sql_proxy_image: 'gcr.io/cloudsql-docker/gce-proxy:1.33.1'
     config_data: "{{ lookup('file', '../schedule-config/config.json') | from_json }}"
-    cloud-sql-proxy_image: "gcr.io/cloudsql-docker/gce-proxy:1.33.1"
 
 # - name: Deploy ingress
 #   hosts: localhost
