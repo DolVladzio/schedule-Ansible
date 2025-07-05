@@ -1,0 +1,9 @@
+- name: Drop The PostgreSQL database
+  become: yes
+  command: >
+    psql -h {{ db_host }}
+          -U {{ db_user }}
+          -d {{ db_name }}
+          -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+  environment:
+    PGPASSWORD: "{{ db_password }}"

@@ -1,0 +1,5 @@
+---
+- name: Restore database to Cloud SQL
+  hosts: "{{ groups['bastion_host'][0] }}"
+  roles:
+    - destroy_db_tables
