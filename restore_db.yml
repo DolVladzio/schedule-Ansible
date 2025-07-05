@@ -1,0 +1,9 @@
+---
+- name: Restore database to Cloud SQL
+  hosts: "{{ groups['bastion_host'][0] }}"
+  roles:
+    - restore_db_from_dump
+  vars:
+    db_dump_file: "./2024-08-19.dump"
+    db_dump_file_dest: "/tmp/2024-08-19.dump"
+    cloud_sql_proxy_version: "v2.17.1"
