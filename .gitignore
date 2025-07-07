@@ -1,14 +1,13 @@
 # Ignore test.tf and inventory
 test.tf
-
+/inventory/
 
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
 
 # Ignore JSON files
-config.json
-keys.json
+*.json*
 **/config-kuber.json
 # Ignore IDE files
 .idea/
