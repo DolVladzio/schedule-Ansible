@@ -41,6 +41,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Run Ansible playbook
+      - name: Run the Ansible playbook
         run: |
           ansible-playbook -i inventory/inventory.ini restore_db.yml -e "db_dump_file=${{ secrets.DUMP_FILE_NAME }}"
