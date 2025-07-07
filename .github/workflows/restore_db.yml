@@ -34,7 +34,7 @@ jobs:
         run: ansible --version
 
       - name: Copy the db dump from the GCP bucket
-        run: gsutil cp gs://${{ secrets.DB_BUCKET_NAME }}/${{ secrets.DB_BUCKET_FILE_NAME }} ./${{ secrets.DUMP_FILE_NAME }}
+        run: gsutil cp gs://maindb_dump/2024-08-19.dump ./db-dump.sql
 
       # - name: Run Ansible playbook
       #   run: |
