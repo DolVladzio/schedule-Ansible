@@ -7,8 +7,7 @@ test.tf
 terraform.rc
 
 # Ignore JSON files
-config.json
-keys.json
+*.json*
 **/config-kuber.json
 # Ignore IDE files
 .idea/
