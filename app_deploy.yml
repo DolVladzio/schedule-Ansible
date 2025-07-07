@@ -1,11 +1,4 @@
 ---
-- name: Restore database to Cloud SQL
-  hosts: "{{ groups['bastion_host'][0] }}"
-  roles:
-    - restore_db_from_dump
-  vars:
-    db_dump_file_dest: "/tmp/{{ db_dump_file }}"
-
 - name: Deploy application
   hosts: localhost
   roles:

@@ -1,0 +1,32 @@
+name: Run The Ansible Role: Restore DB
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ansible:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Show Ansible version
+        run: ansible --version
+
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook -i inventory.ini restore_db.yml
