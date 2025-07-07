@@ -19,7 +19,6 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_KEY  }}'
 
-      # Optional: setup gcloud CLI (if you use gcloud commands)
       - name: Setup gcloud CLI
         uses: google-github-actions/setup-gcloud@v2
 
@@ -33,12 +32,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
-      - name: Show Ansible version
-        run: ansible --version
-
       - name: Copy the db dump from the GCP bucket
         run: gsutil cp gs://${{ secrets.DB_BUCKET_NAME }}/${{ secrets.DB_BUCKET_FILE_NAME }} ./${{ secrets.DUMP_FILE_NAME }}
 
-      # - name: Run Ansible playbook
-      #   run: |
-      #     ansible-playbook -i inventory.ini restore_db.yml -e "db_dump_file=${{ secrets.DUMP_FILE_NAME }}"
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook -i inventory.ini restore_db.yml -e "db_dump_file=${{ secrets.DUMP_FILE_NAME }}"

@@ -1,6 +1,6 @@
 # Ignore test.tf and inventory
 test.tf
-/inventory/
+
 
 # Ignore CLI configuration files
 .terraformrc
