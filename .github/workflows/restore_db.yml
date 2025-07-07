@@ -37,4 +37,4 @@ jobs:
 
       - name: Run Ansible playbook
         run: |
-          ansible-playbook -i inventory.ini restore_db.yml -e "db_dump_file=${{ secrets.DUMP_FILE_NAME }}"
+          ansible-playbook -i inventory/inventory.ini restore_db.yml -e "db_dump_file=${{ secrets.DUMP_FILE_NAME }}"
