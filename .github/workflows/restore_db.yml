@@ -14,6 +14,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_KEY }}
+
+      - name: Set Up GCP Project
+        run: gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -27,6 +35,9 @@ jobs:
       - name: Show Ansible version
         run: ansible --version
 
-      - name: Run Ansible playbook
-        run: |
-          ansible-playbook -i inventory.ini restore_db.yml
+      - name: 
+        run: gsutil cp gs://${{ secrets.DB_BUCKET_NAME }}/${{ secrets.DB_BUCKET_FILE_NAME }} ./${{ secrets.DUMP_FILE_NAME }}
+
+      # - name: Run Ansible playbook
+      #   run: |
+      #     ansible-playbook -i inventory.ini restore_db.yml -e "db_dump_file=${{ secrets.DUMP_FILE_NAME }}"
