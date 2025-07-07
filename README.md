@@ -1,4 +1,4 @@
-# 🐙 Schedule Deployment with Ansible
+# 🐙 Schedule Deployment with Ansible [![Run The Ansible Role: Restore DB](https://github.com/DolVladzio/schedule-Ansible/actions/workflows/restore_db.yml/badge.svg?branch=main)](https://github.com/DolVladzio/schedule-Ansible/actions/workflows/restore_db.yml)
 
 This project uses Ansible to automate the deployment of a Kubernetes-based application, including app components (deployments, services, configmaps, secrets) and ingress setup (TLS, cert-manager, nginx ingress).
 
