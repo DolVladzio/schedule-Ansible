@@ -20,6 +20,10 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_KEY }}
 
+      - name: Install gcloud CLI (optional, if not already installed)
+        run: |
+          gcloud components install gsutil
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
