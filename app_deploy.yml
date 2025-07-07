@@ -1,17 +1,16 @@
 ---
-- name: Restore database to Cloud SQL
-  hosts: "{{ groups['bastion_host'][0] }}"
-  roles:
-    - restore_db_from_dump
-  vars:
-    db_dump_file_dest: "/tmp/{{ db_dump_file }}"
+# - name: Restore database to Cloud SQL
+#   hosts: "{{ groups['bastion_host'][0] }}"
+#   roles:
+#     - restore_db_from_dump
+#   vars:
+#     db_dump_file_dest: "/tmp/{{ db_dump_file }}"
 
 - name: Deploy application
   hosts: localhost
   roles:
     - app_deploy
   vars:
-    cloud_sql_proxy_image: 'gcr.io/cloudsql-docker/gce-proxy:1.33.1'
     config_data: "{{ lookup('file', '../schedule-config/config.json') | from_json }}"
 
 # - name: Deploy ingress
