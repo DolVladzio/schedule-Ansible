@@ -5,9 +5,3 @@
     - app_deploy
   vars:
     config_data: "{{ lookup('file', '../schedule-config/config.json') | from_json }}"
-
-# - name: Deploy ingress
-#   hosts: localhost
-#   roles:
-#     - cert_manager
-#     - nginx_ingress_controller
