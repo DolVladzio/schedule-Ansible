@@ -1,0 +1,6 @@
+---
+- name: Deploy ingress
+  hosts: localhost
+  roles:
+    - cert_manager
+    - nginx_ingress_controller
