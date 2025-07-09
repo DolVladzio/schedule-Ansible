@@ -42,5 +42,5 @@ jobs:
 
       - name: Run the Ansible playbook
         run: |
-          ansible-playbook ingress_deploy.yml \
+          ansible-playbook ingress_deploy.yml
           ansible-playbook app_deploy.yml -e "frontend_image=frontend:2025-07-05-16-36-08 backend_image=backend:2025-07-05-16-36-05 env=production"
