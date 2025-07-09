@@ -3,10 +3,9 @@ name: "Run The Ansible Role: App Deploy"
 on:
   push:
     branches: [ dev ]
-  pull_request:
   workflow_dispatch:
   repository_dispatch:
-    types: [ deploy ]
+    types: [ app_deploy ]
 
 jobs:
   ansible:
@@ -28,11 +27,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-
-      - name: Install GKE auth plugin
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-cloud-sdk-gke-gcloud-auth-plugin
 
       - name: Install Ansible
         run: |
