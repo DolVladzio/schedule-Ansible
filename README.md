@@ -2,8 +2,6 @@
 
 App Deploy - [![Run The Ansible Role: App Deploy](https://github.com/DolVladzio/schedule-Ansible/actions/workflows/app_deploy.yml/badge.svg?branch=main)](https://github.com/DolVladzio/schedule-Ansible/actions/workflows/app_deploy.yml)
 
-Ingress Deploy - [![Run The Ansible Role: Ingress Deploy](https://github.com/DolVladzio/schedule-Ansible/actions/workflows/ingress_deploy.yml/badge.svg?branch=main)](https://github.com/DolVladzio/schedule-Ansible/actions/workflows/ingress_deploy.yml)
-
 Restore DB - [![Run The Ansible Role: Restore DB](https://github.com/DolVladzio/schedule-Ansible/actions/workflows/restore_db.yml/badge.svg?branch=main)](https://github.com/DolVladzio/schedule-Ansible/actions/workflows/restore_db.yml)
 
 This project uses Ansible to automate the deployment of a Kubernetes-based application, including app components (deployments, services, configmaps, secrets) and ingress setup (TLS, cert-manager, nginx ingress).
