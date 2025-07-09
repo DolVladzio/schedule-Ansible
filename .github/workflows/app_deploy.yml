@@ -43,6 +43,10 @@ jobs:
         run: |
           gcloud container clusters get-credentials ${{ secrets.GCP_CLUSTER_NAME }} --zone ${{ secrets.GCP_CLUSTER_REGION }}-a --project ${{ secrets.GCP_PROJECT_ID }}
 
-      # - name: Run the Ansible playbook
-      #   run: |
-      #     ansible-playbook -i inventory/inventory.ini app_deploy.yml -e "frontend_image=frontend:2025-07-05-16-36-08 backend_image=backend:2025-07-05-16-36-05 env=production"
+      - name: Copy the inventory.ini from the GCP bucket
+        run: gsutil cp gs://${{ secrets.ANSBILE_BUCKET_NAME }}/inventory.ini inventory/inventory.ini
+
+      - name: Run the Ansible playbook
+        run: |
+          ansible-playbook ingress_deploy.yml \
+          ansible-playbook app_deploy.yml -e "frontend_image=frontend:2025-07-05-16-36-08 backend_image=backend:2025-07-05-16-36-05 env=production"
