@@ -28,6 +28,16 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Clone another repo
+        run: |
+          git clone https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-config.git ../schedule-config
+
+      - name: Add SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
       - name: Install Ansible
         run: |
           python -m pip install --upgrade pip
