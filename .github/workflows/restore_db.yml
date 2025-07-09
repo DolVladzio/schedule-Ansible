@@ -3,8 +3,9 @@ name: "Run The Ansible Role: Restore DB"
 on:
   push:
     branches: [ main ]
-  pull_request:
   workflow_dispatch:
+  repository_dispatch:
+    types: [ restore_db ]
 
 jobs:
   ansible:
@@ -35,6 +36,9 @@ jobs:
       - name: Copy the db dump from the GCP bucket
         run: gsutil cp gs://${{ secrets.DB_BUCKET_NAME }}/${{ secrets.DB_BUCKET_FILE_NAME }} ./${{ secrets.DUMP_FILE_NAME }}
 
+      - name: Copy the inventory.ini from the GCP bucket
+        run: gsutil cp gs://${{ secrets.ANSBILE_BUCKET_NAME }}/inventory.ini inventory/inventory.ini
+
       - name: Add SSH key
         run: |
           mkdir -p ~/.ssh
@@ -43,4 +47,4 @@ jobs:
 
       - name: Run the Ansible playbook
         run: |
-          ansible-playbook -i inventory/inventory.ini restore_db.yml -e "db_dump_file=${{ secrets.DUMP_FILE_NAME }}"
+          ansible-playbook restore_db.yml -e "db_dump_file=${{ secrets.DUMP_FILE_NAME }}"

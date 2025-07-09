@@ -3,10 +3,9 @@ name: "Run The Ansible Role: App Deploy"
 on:
   push:
     branches: [ main ]
-  pull_request:
   workflow_dispatch:
   repository_dispatch:
-    types: [deploy]
+    types: [ app_deploy ]
 
 jobs:
   ansible:
@@ -29,15 +28,33 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Clone another repo
+        run: |
+          git clone https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-config.git ../schedule-config
+
+      - name: Add SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
       - name: Install Ansible
         run: |
           python -m pip install --upgrade pip
           pip install ansible
+          pip install kubernetes
+          ansible-galaxy collection install community.kubernetes
+          ansible-galaxy collection install community.general
+          gcloud components install gke-gcloud-auth-plugin
 
-      - name:
+      - name: Getting access to the GKE Cluster
         run: |
           gcloud container clusters get-credentials ${{ secrets.GCP_CLUSTER_NAME }} --zone ${{ secrets.GCP_CLUSTER_REGION }}-a --project ${{ secrets.GCP_PROJECT_ID }}
 
-      # - name: Run the Ansible playbook
-      #   run: |
-      #     ansible-playbook -i inventory/inventory.ini app_deploy.yml -e "frontend_image=frontend:2025-07-05-16-36-08 backend_image=backend:2025-07-05-16-36-05 env=production"
+      - name: Copy the inventory.ini from the GCP bucket
+        run: gsutil cp gs://${{ secrets.ANSBILE_BUCKET_NAME }}/inventory.ini inventory/inventory.ini
+
+      - name: Run the Ansible playbook
+        run: |
+          ansible-playbook ingress_deploy.yml
+          ansible-playbook app_deploy.yml -e "frontend_image=frontend:2025-07-05-16-36-08 backend_image=backend:2025-07-05-16-36-05 env=production"
