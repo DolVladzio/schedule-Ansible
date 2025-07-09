@@ -34,6 +34,7 @@ jobs:
           pip install ansible
           ansible-galaxy collection install community.kubernetes
           ansible-galaxy collection install community.general
+          gcloud components install gke-gcloud-auth-plugin
 
       - name: Getting access to the GKE Cluster
         run: |
