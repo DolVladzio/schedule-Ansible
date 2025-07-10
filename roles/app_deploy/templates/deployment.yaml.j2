@@ -18,9 +18,9 @@ spec:
       containers:
         - name: {{ item.app }}
 {% if item.name == "frontend" %}
-          image: "{{ frontend_image }}"
+          image: {{ frontend_image }}
 {% elif item.name == "backend" %}
-          image: "{{ backend_image }}"
+          image: {{ backend_image }}
           env:
           - name: DB_HOST
             value: {{ db_host }}
