@@ -8,14 +8,19 @@ This project uses Ansible to automate the deployment of a Kubernetes-based appli
 
 ## 📁 Project Structure
 ```bash
-├── app-deploy.yml # Main Ansible playbook
-├── roles/
-│ ├── app_deploy/ # Handles app deployments, services, configmaps, secrets, restores db
-│ ├── cert_manager/ # Installs cert-manager and certificates
-│ └── nginx_ingress_controller/ # Deploys nginx ingress controller
-└── README.md # This file
-```
-- To run you can use this command:
-```bash
-ansible-galaxy collection install kubernetes.core && ansible-playbook app-deploy.yml
+.
+├── README.md
+├── ansible.cfg
+├── app_deploy.yml
+├── group_vars
+│   └── all.yml
+├── ingress_deploy.yml
+├── inventory
+│   └── inventory.ini
+├── restore_db.yml
+└── roles
+    ├── app_deploy
+    ├── cert_manager
+    ├── nginx_ingress_controller
+    └── restore_db_from_dump
 ```
