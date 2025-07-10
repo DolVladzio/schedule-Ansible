@@ -57,7 +57,7 @@ jobs:
         run: |
           echo "FRONTEND_IMAGE=${{ github.event.client_payload.frontend_image }}" >> $GITHUB_ENV
 
-      - name: Fallback: set frontend image to current cluster value
+      - name: "Fallback: set frontend image to current cluster value"
         if: github.event.action != 'deploy-frontend'
         run: |
           CURRENT=$(kubectl get deployment frontend -n "${{ secrets.K8S_NAMESPACE_NAME }}" -o jsonpath='{.spec.template.spec.containers[0].image}')
