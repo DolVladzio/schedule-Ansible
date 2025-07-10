@@ -3,7 +3,7 @@ name: "Run The Ansible Role: App Deploy"
 on:
   workflow_dispatch:
   repository_dispatch:
-    types: [ app_deploy ]
+    types: [ deploy-frontend, deploy-backend ]
 
 jobs:
   ansible:
@@ -52,7 +52,13 @@ jobs:
       - name: Copy the inventory.ini from the GCP bucket
         run: gsutil cp gs://${{ secrets.ANSBILE_BUCKET_NAME }}/inventory.ini inventory/inventory.ini
 
-      - name: Run the Ansible playbook
+      - name: Set variables
+        run: |
+          echo "FRONTEND_IMAGE=${{ github.event.client_payload.frontend_image }}" >> $GITHUB_ENV
+          echo "BACKEND_IMAGE=${{ github.event.client_payload.backend_image }}" >> $GITHUB_ENV
+
+      - name: Run the ansible playbook
         run: |
           ansible-playbook ingress_deploy.yml
-          ansible-playbook app_deploy.yml -e "frontend_image=frontend:2025-07-05-16-36-08 backend_image=backend:2025-07-05-16-36-05 env=production"
+          ansible-playbook app_deploy.yml \
+            -e "frontend_image=frontend:${FRONTEND_IMAGE} backend_image=backend:${BACKEND_IMAGE} env=production"
