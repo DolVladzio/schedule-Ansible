@@ -56,9 +56,6 @@ jobs:
         run: |
           echo "FRONTEND_IMAGE=$(kubectl get deployment frontend -n "${{ secrets.K8S_NAMESPACE_NAME }}" -o jsonpath='{.spec.template.spec.containers[0].image}')" >> $GITHUB_ENV
           echo "BACKEND_IMAGE=$(kubectl get deployment backend -n "${{ secrets.K8S_NAMESPACE_NAME }}" -o jsonpath='{.spec.template.spec.containers[0].image}')" >> $GITHUB_ENV
-
-          echo $FRONTEND_IMAGE
-          echo $BACKEND_IMAGE
       
       # - name: Update frontend image if needed
       #   if: github.event.action == 'deploy-frontend'
@@ -70,8 +67,8 @@ jobs:
       #   run: |
       #     echo "BACKEND_IMAGE=${{ github.event.client_payload.backend_image }}" >> $GITHUB_ENV
 
-      # - name: Run the ansible playbook
-      #   run: |
-      #     ansible-playbook ingress_deploy.yml
-      #     ansible-playbook app_deploy.yml \
-      #       -e "frontend_image=$FRONTEND_IMAGE backend_image=$BACKEND_IMAGE env=production"
+      - name: Run the ansible playbook
+        run: |
+          ansible-playbook ingress_deploy.yml
+          ansible-playbook app_deploy.yml \
+            -e "frontend_image=$FRONTEND_IMAGE backend_image=$BACKEND_IMAGE env=production"
