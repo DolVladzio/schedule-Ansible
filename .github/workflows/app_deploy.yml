@@ -84,6 +84,4 @@ jobs:
       #######################################################
       - name: Run the ansible playbook
         run: |
-          ansible-playbook ingress_deploy.yml
-          ansible-playbook app_deploy.yml \
-            -e "frontend_image=${{ env.FRONTEND_IMAGE }} backend_image=${{ env.BACKEND_IMAGE }} env=production"
+          ./shell_scripts/image_automation.sh ${{ env.FRONTEND_IMAGE }} ${{ env.BACKEND_IMAGE }}
