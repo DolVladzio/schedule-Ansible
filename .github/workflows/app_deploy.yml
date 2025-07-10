@@ -51,23 +51,37 @@ jobs:
 
       - name: Copy the inventory.ini from the GCP bucket
         run: gsutil cp gs://${{ secrets.ANSBILE_BUCKET_NAME }}/inventory.ini inventory/inventory.ini
-      
-      - name: Update frontend image if needed
+      #######################################################
+      - name: Set frontend image to payload value
+        if: github.event.action == 'deploy-frontend'
         run: |
-          if [ ${{ github.event.action }} == 'deploy-frontend' ]; then
-            echo "FRONTEND_IMAGE=${{ github.event.client_payload.frontend_image }}" >> $GITHUB_ENV
-          else
-            echo "FRONTEND_IMAGE=$(kubectl get deployment frontend -n "${{ secrets.K8S_NAMESPACE_NAME }}" -o jsonpath='{.spec.template.spec.containers[0].image}')" >> $GITHUB_ENV
-          fi
+          echo "FRONTEND_IMAGE=${{ github.event.client_payload.frontend_image }}" >> $GITHUB_ENV
 
-      - name: Update backend image if needed
+      - name: Fallback: set frontend image to current cluster value
+        if: github.event.action != 'deploy-frontend'
         run: |
-          if [ ${{ github.event.action }} == 'deploy-backend' ]; then
-            echo "BACKEND_IMAGE=${{ github.event.client_payload.backend_image }}" >> $GITHUB_ENV
-          else
-            echo "BACKEND_IMAGE=$(kubectl get deployment backend -n "${{ secrets.K8S_NAMESPACE_NAME }}" -o jsonpath='{.spec.template.spec.containers[0].image}')" >> $GITHUB_ENV
+          CURRENT=$(kubectl get deployment frontend -n "${{ secrets.K8S_NAMESPACE_NAME }}" -o jsonpath='{.spec.template.spec.containers[0].image}')
+          if [ -z "$CURRENT" ]; then
+            echo "❌ Could not fetch current frontend image!" >&2
+            exit 1
           fi
+          echo "FRONTEND_IMAGE=$CURRENT" >> $GITHUB_ENV
+      #######################################################
+      - name: Set backend image to payload value
+        if: github.event.action == 'deploy-backend'
+        run: |
+          echo "BACKEND_IMAGE=${{ github.event.client_payload.backend_image }}" >> $GITHUB_ENV
 
+      - name: Fallback: set backend image to current cluster value
+        if: github.event.action != 'deploy-backend'
+        run: |
+          CURRENT=$(kubectl get deployment backend -n "${{ secrets.K8S_NAMESPACE_NAME }}" -o jsonpath='{.spec.template.spec.containers[0].image}')
+          if [ -z "$CURRENT" ]; then
+            echo "❌ Could not fetch current backend image!" >&2
+            exit 1
+          fi
+          echo "BACKEND_IMAGE=$CURRENT" >> $GITHUB_ENV
+      #######################################################
       - name: Run the ansible playbook
         run: |
           ansible-playbook ingress_deploy.yml
