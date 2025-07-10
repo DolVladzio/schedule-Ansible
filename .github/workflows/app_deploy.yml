@@ -54,8 +54,8 @@ jobs:
 
       - name: Get current images
         run: |
-          FRONTEND_IMAGE=$(kubectl get deployment frontend -n "${{ secrets.K8S_NAMESPACE_NAME }}" -o jsonpath='{.spec.template.spec.containers[0].image}')
-          BACKEND_IMAGE=$(kubectl get deployment backend -n "${{ secrets.K8S_NAMESPACE_NAME }}" -o jsonpath='{.spec.template.spec.containers[0].image}')
+          echo "FRONTEND_IMAGE=$(kubectl get deployment frontend -n "${{ secrets.K8S_NAMESPACE_NAME }}" -o jsonpath='{.spec.template.spec.containers[0].image}')" >> $GITHUB_ENV
+          echo "BACKEND_IMAGE=$(kubectl get deployment backend -n "${{ secrets.K8S_NAMESPACE_NAME }}" -o jsonpath='{.spec.template.spec.containers[0].image}')" >> $GITHUB_ENV
       
       # - name: Update frontend image if needed
       #   if: github.event.action == 'deploy-frontend'
