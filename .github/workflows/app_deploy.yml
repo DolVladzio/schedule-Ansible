@@ -71,4 +71,4 @@ jobs:
         run: |
           ansible-playbook ingress_deploy.yml
           ansible-playbook app_deploy.yml \
-            -e "frontend_image=$FRONTEND_IMAGE backend_image=$BACKEND_IMAGE env=production"
+            -e "frontend_image={{ env.FRONTEND_IMAGE }} backend_image={{ env.BACKEND_IMAGE }} env=production"
