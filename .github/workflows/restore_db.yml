@@ -35,9 +35,7 @@ jobs:
         run: gsutil cp gs://${{ secrets.DB_BUCKET_NAME }}/${{ secrets.DB_BUCKET_FILE_NAME }} ./${{ secrets.DB_BUCKET_FILE_NAME }}
 
       - name: Copy the inventory.ini from the GCP bucket
-        run: |
-          echo "ANSBILE_BUCKET_NAME=${{ github.event.client_payload.ansible_bucket_name }}" >> $GITHUB_ENV
-          gsutil cp gs://${{ env.ANSBILE_BUCKET_NAME }}/inventory.ini inventory/inventory.ini
+        run: gsutil cp gs://${{ secrets.ANSBILE_BUCKET_NAME }}/inventory.ini inventory/inventory.ini
 
       - name: Add SSH key
         run: |
