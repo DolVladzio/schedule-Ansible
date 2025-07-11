@@ -1,4 +1,4 @@
-name: "Run The Ansible Role: Restore DB"
+name: "Restore DB"
 
 on:
   workflow_dispatch:
