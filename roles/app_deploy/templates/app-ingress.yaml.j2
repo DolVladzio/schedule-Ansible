@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ item.ingress_name }}
-  namespace: {{ item.ingress_namespace }}
+  namespace: {{ env }}
   annotations:
     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -12,12 +12,12 @@ spec:
   tls:
     - hosts:
 {% for domain in ingress_domains %}
-        - {{ item.domain }}
+        - {{ item.domain[env] }}
 {% endfor %}
       secretName: {{ item.tls_secret_name_map[env] }}
   rules:
 {% for domain in ingress_domains %}
-    - host: {{ item.domain }}
+    - host: {{ item.domain[env] }}
       http:
         paths:
           - path: /api(/|$)(.*)

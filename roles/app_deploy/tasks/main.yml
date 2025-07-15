@@ -1,11 +1,11 @@
 - name: Create a k8s namespace
   kubernetes.core.k8s:
-    name: "{{ item.name }}"
+    name: "{{ env }}"
     api_version: v1
     kind: Namespace
     state: present
-  loop: "{{ config_data.namespaces }}"
-  tags: namespaces
+  tags: 
+    - namespaces
 
 - name: Deploy ConfigMap
   kubernetes.core.k8s:

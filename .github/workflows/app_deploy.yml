@@ -46,14 +46,8 @@ jobs:
           gcloud components install gke-gcloud-auth-plugin
 
       - name: Getting access to the prod GKE Cluster
-        if: ${{ github.event.client_payload.env }} == 'prod'
         run: |
-          gcloud container clusters get-credentials ${{ secrets.PROD_GCP_CLUSTER_NAME }} --zone ${{ secrets.GCP_CLUSTER_REGION }}-a --project ${{ secrets.GCP_PROJECT_ID }}    
-
-      - name: Getting access to the dev GKE Cluster
-        if: ${{ github.event.client_payload.env }} == 'dev'
-        run: |
-          gcloud container clusters get-credentials ${{ secrets.DEV_GCP_CLUSTER_NAME }} --zone ${{ secrets.GCP_CLUSTER_REGION }}-a --project ${{ secrets.GCP_PROJECT_ID }}         
+          gcloud container clusters get-credentials ${{ secrets.PROD_GCP_CLUSTER_NAME }} --zone ${{ secrets.GCP_CLUSTER_REGION }}-a --project ${{ secrets.GCP_PROJECT_ID }}        
 
       - name: Copy the inventory.ini from the GCP bucket
         run: gsutil cp gs://${{ secrets.ANSBILE_BUCKET_NAME }}/inventory.ini inventory/inventory.ini

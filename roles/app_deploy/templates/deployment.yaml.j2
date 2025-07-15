@@ -2,11 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ item.name }}
-  namespace: {{ item.namespace }}
+  namespace: {{ env }}
   labels:
     app: {{ item.app }}
 spec:
-  replicas: {{ item.replicas }}
+  replicas: {{ item.replicas[env] }}
   selector:
     matchLabels:
       app: {{ item.app }}
