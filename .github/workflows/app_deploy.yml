@@ -45,9 +45,15 @@ jobs:
           ansible-galaxy collection install community.general
           gcloud components install gke-gcloud-auth-plugin
 
-      - name: Getting access to the GKE Cluster
+      - name: Getting access to the prod GKE Cluster
+        if: ${{ github.event.client_payload.env }} == 'prod'
         run: |
-          gcloud container clusters get-credentials ${{ secrets.GCP_CLUSTER_NAME }} --zone ${{ secrets.GCP_CLUSTER_REGION }}-a --project ${{ secrets.GCP_PROJECT_ID }}
+          gcloud container clusters get-credentials ${{ secrets.PROD_GCP_CLUSTER_NAME }} --zone ${{ secrets.GCP_CLUSTER_REGION }}-a --project ${{ secrets.GCP_PROJECT_ID }}    
+
+      - name: Getting access to the dev GKE Cluster
+        if: ${{ github.event.client_payload.env }} == 'dev'
+        run: |
+          gcloud container clusters get-credentials ${{ secrets.DEV_GCP_CLUSTER_NAME }} --zone ${{ secrets.GCP_CLUSTER_REGION }}-a --project ${{ secrets.GCP_PROJECT_ID }}         
 
       - name: Copy the inventory.ini from the GCP bucket
         run: gsutil cp gs://${{ secrets.ANSBILE_BUCKET_NAME }}/inventory.ini inventory/inventory.ini
@@ -86,4 +92,4 @@ jobs:
         run: |
           ansible-playbook ingress_deploy.yml
           ansible-playbook app_deploy.yml \
-            -e "frontend_image=${{ env.FRONTEND_IMAGE }} backend_image=${{ env.BACKEND_IMAGE }} env=production"
+            -e "frontend_image=${{ env.FRONTEND_IMAGE }} backend_image=${{ env.BACKEND_IMAGE }} env=${{ github.event.client_payload.env }}"
