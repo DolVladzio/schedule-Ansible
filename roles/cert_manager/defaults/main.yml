@@ -34,14 +34,14 @@ ingress_class_name: nginx
 ingress_name: "nginx"
 
 cluster_issuer_map:
-  staging: "letsencrypt-staging"
-  production: "letsencrypt-production"
+  dev: "letsencrypt-staging"
+  prod: "letsencrypt-production"
 
 cert_manager_server_map:
-  staging: "https://acme-staging-v02.api.letsencrypt.org/directory"
-  production: "https://acme-v02.api.letsencrypt.org/directory"
+  dev: "https://acme-staging-v02.api.letsencrypt.org/directory"
+  prod: "https://acme-v02.api.letsencrypt.org/directory"
 
 # default
-cluster_issuer_name: "{{ cluster_issuer_map[(env | default('staging'))] | trim  }}"
+cluster_issuer_name: "{{ cluster_issuer_map[(env | default('dev'))] | trim  }}"
 
-cert_manager_server: "{{ cert_manager_server_map[(env | default('staging'))] | trim  }}"
+cert_manager_server: "{{ cert_manager_server_map[(env | default('dev'))] | trim  }}"
