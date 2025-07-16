@@ -50,7 +50,9 @@ jobs:
         run: |
           gcloud container clusters get-credentials ${{ secrets.PROD_GCP_CLUSTER_NAME }} \
             --zone ${{ secrets.GCP_CLUSTER_REGION }}-a \
-            --project ${{ secrets.GCP_PROJECT_ID }}        
+            --project ${{ secrets.GCP_PROJECT_ID }}      
+
+          echo "K8S_NAMESPACE_NAME=${{ github.event.client_payload.env }}" >> $GITHUB_ENV  
 
       - name: Getting access to the dev GKE Cluster
         if: github.event.client_payload.env == 'dev'
@@ -58,6 +60,8 @@ jobs:
           gcloud container clusters get-credentials ${{ secrets.DEV_GCP_CLUSTER_NAME }} \
             --zone ${{ secrets.GCP_CLUSTER_REGION }}-a \
             --project ${{ secrets.GCP_PROJECT_ID }}  
+
+          echo "K8S_NAMESPACE_NAME=${{ github.event.client_payload.env }}" >> $GITHUB_ENV
 
       - name: Copy the inventory.ini from the GCP bucket
         run: gsutil cp gs://${{ secrets.ANSBILE_BUCKET_NAME }}/inventory.ini inventory/inventory.ini
@@ -71,7 +75,7 @@ jobs:
         if: github.event.action != 'deploy-frontend'
         run: |
           CURRENT=$(kubectl get deployment frontend \
-              -n "${{ secrets.K8S_NAMESPACE_NAME }}" \
+              -n "${{ env.K8S_NAMESPACE_NAME }}" \
               -o jsonpath='{.spec.template.spec.containers[0].image}')
 
           if [ -z "$CURRENT" ]; then
@@ -89,7 +93,7 @@ jobs:
         if: github.event.action != 'deploy-backend'
         run: |
           CURRENT=$(kubectl get deployment backend \
-              -n "${{ secrets.K8S_NAMESPACE_NAME }}" \
+              -n "${{ env.K8S_NAMESPACE_NAME }}" \
               -o jsonpath='{.spec.template.spec.containers[0].image}')
 
           if [ -z "$CURRENT" ]; then
