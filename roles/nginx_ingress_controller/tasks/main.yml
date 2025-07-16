@@ -14,15 +14,10 @@
         kind: Deployment
         service:
           type: LoadBalancer
-          loadBalancerIP: "{{ vars['gke-ingress-ip'] }}"
+          loadBalancerIP: "{{ hostvars[inventory_hostname].get(env ~ '-gke-ingress-ip', 'IP_NOT_DEFINED') }}"
         ingressClassResource:
           name: "{{ ingress_class_name }}"
           enabled: true
           default: true
     wait: true
     update_repo_cache: true
-
-# - name: Create app ingress resource
-#   kubernetes.core.k8s:
-#     state: present
-#     definition: "{{ lookup('template', 'app_ingress.yml.j2') }}"
