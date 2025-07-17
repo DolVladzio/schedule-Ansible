@@ -4,4 +4,4 @@
   roles:
     - app_deploy
   vars:
-    config_data: "{{ lookup('file', '../schedule-config/ansible.json') | from_json }}"
+    config_data: "{{ lookup('file', '../schedule-ansible-config/ansible.json') | from_json }}"
