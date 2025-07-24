@@ -3,7 +3,7 @@ name: "App Deploy"
 on:
   workflow_dispatch:
   repository_dispatch:
-    types: [ deploy-app, deploy-frontend, deploy-backend ]
+    types: [ deploy-app-dev, deploy-app-prod, deploy-frontend, deploy-backend ]
 
 jobs:
   ansible:
