@@ -56,5 +56,4 @@ jobs:
       
       - name: "Run the ansible playbook: install_jenkins"
         run: |
-          ansible-playbook ingress_deploy.yml \
-            -e "=${{  }}"
+          ansible-playbook install_jenkins.yml
