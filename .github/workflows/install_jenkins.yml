@@ -27,14 +27,14 @@ jobs:
           python-version: '3.x'
 
       - name: Set dev branch of the json config
-        if: github.event.client_payload.environment == 'dev'
+        if: github.event.client_payload.env == 'dev'
         run: |
           git clone --branch ${{ github.event.client_payload.environment }} \
             https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-ansible-config.git \
             ../schedule-ansible-config
 
       - name: Set main branch of the json config
-        if: github.event.client_payload.environment == 'prod'
+        if: github.event.client_payload.env == 'prod'
         run: |
           git clone https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-ansible-config.git \
             ../schedule-ansible-config

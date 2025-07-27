@@ -26,19 +26,6 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Set dev branch of the json config
-        if: github.event.client_payload.environment == 'dev'
-        run: |
-          git clone --branch ${{ github.event.client_payload.environment }} \
-            https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-ansible-config.git \
-            ../schedule-ansible-config
-
-      - name: Set main branch of the json config
-        if: github.event.client_payload.environment == 'prod'
-        run: |
-          git clone https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-ansible-config.git \
-            ../schedule-ansible-config
-
       - name: Add SSH key
         run: |
           mkdir -p ~/.ssh
@@ -60,6 +47,9 @@ jobs:
           gcloud container clusters get-credentials ${{ secrets.PROD_GCP_CLUSTER_NAME }} \
             --zone ${{ secrets.GCP_CLUSTER_REGION }}-a \
             --project ${{ secrets.GCP_PROJECT_ID }}      
+          
+          git clone https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-ansible-config.git \
+            ../schedule-ansible-config
 
           echo "K8S_NAMESPACE_NAME=${{ github.event.client_payload.env }}" >> $GITHUB_ENV  
 
@@ -69,6 +59,10 @@ jobs:
           gcloud container clusters get-credentials ${{ secrets.DEV_GCP_CLUSTER_NAME }} \
             --zone ${{ secrets.GCP_CLUSTER_REGION }}-a \
             --project ${{ secrets.GCP_PROJECT_ID }}  
+
+          git clone --branch ${{ github.event.client_payload.env }} \
+            https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-ansible-config.git \
+            ../schedule-ansible-config
 
           echo "K8S_NAMESPACE_NAME=${{ github.event.client_payload.env }}" >> $GITHUB_ENV
 
