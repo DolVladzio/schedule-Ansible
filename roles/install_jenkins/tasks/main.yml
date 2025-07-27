@@ -1,0 +1,51 @@
+---
+- name: Get GKE {{ jenkins_cluster_name }}'s credentials
+  ansible.builtin.shell: >
+    gcloud container clusters get-credentials {{ jenkins_cluster_name }}
+    --region {{ jenkins_cluster_region }} --project {{ project_id }}
+
+- name: Debug kubeconfig path
+  debug:
+    msg: "Kubeconfig is: {{ kubeconfig_path }}"
+
+- name: Add Jenkins Helm repo
+  kubernetes.core.helm_repository:
+    name: jenkins
+    repo_url: "{{ item.repo_url }}"
+  loop: "{{ config_data.jenkins }}"
+
+- name: Create Jenkins namespace
+  kubernetes.core.k8s:
+    kubeconfig: "{{ kubeconfig_path }}"
+    api_version: v1
+    kind: Namespace
+    name: "{{ item.jenkins_namespace }}"
+    state: present
+  loop: "{{ config_data.jenkins }}"
+
+- name: Install Jenkins via Helm
+  kubernetes.core.helm:
+    kubeconfig: "{{ kubeconfig_path }}"
+    name: "{{ item.jenkins_release_name }}"
+    chart_ref: "{{ item.jenkins_chart }}"
+    namespace: "{{ item.jenkins_namespace }}"
+    create_namespace: false
+    values:
+      controller:
+        serviceType: "{{ item.serviceType }}"
+        admin:
+          username: "{{ item.jenkins_admin_user }}"
+          password: "{{ item.jenkins_admin_password }}"
+        
+        installPlugins:
+          - job-dsl
+          - configuration-as-code
+        
+        JCasC:
+          enabled: true
+          configScripts:
+            jobdsl: |
+              jobs:
+                - script: >
+                    {{ lookup('file', '../jcasc_pipelines/pipeline.groovy') | indent(18) }}
+  loop: "{{ config_data.jenkins }}"
