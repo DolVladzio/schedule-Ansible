@@ -1,0 +1,60 @@
+name: Install Jenkins
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [ install_jenkins ]
+
+jobs:
+  ansible:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_KEY  }}'
+
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Clone another repo
+        run: |
+          git clone https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-ansible-config.git ../schedule-ansible-config
+
+      - name: Add SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+          pip install kubernetes
+          ansible-galaxy collection install community.kubernetes
+          ansible-galaxy collection install community.general
+          gcloud components install gke-gcloud-auth-plugin
+
+      - name: Getting access to the Jenkins GKE Cluster
+        run: |
+          gcloud container clusters get-credentials ${{ secrets.JENKINS_GCP_CLUSTER_NAME }} \
+            --zone ${{ secrets.GCP_CLUSTER_REGION }}-a \
+            --project ${{ secrets.GCP_PROJECT_ID }}      
+
+      - name: Copy the inventory.ini from the GCP bucket
+        run: gsutil cp gs://${{ secrets.ANSBILE_BUCKET_NAME }}/inventory.ini inventory/inventory.ini
+      
+      - name: "Run the ansible playbook: install_jenkins"
+        run: |
+          ansible-playbook ingress_deploy.yml \
+            -e "=${{  }}"
