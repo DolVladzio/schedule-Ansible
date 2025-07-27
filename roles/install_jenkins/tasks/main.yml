@@ -44,6 +44,9 @@
         JCasC:
           enabled: true
           configScripts:
+            welcome-message: |
+              jenkins:
+                systemMessage: "Welcome to Jenkins by DolVladzio!"
             jobdsl: |
               jobs:
                 - script: >

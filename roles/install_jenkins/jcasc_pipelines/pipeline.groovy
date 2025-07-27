@@ -1,66 +1,31 @@
-// #############################################################################
-pipelineJob('prod-frontend') {
-  definition {
-    cpsScm {
-      scm {
-        git {
-          remote {
-            url('https://github.com/DolVladzio/schedule_frontend.git')
+// FRONTEND/BACKEND jobs #######################################################
+def jobs = [
+  // FRONTEND
+  [name: 'prod-frontend', repo: 'https://github.com/DolVladzio/schedule_frontend.git', branch: '*/main', file_name: 'Jenkinsfiles/Jenkinsfile'],
+  [name: 'dev-frontend',  repo: 'https://github.com/DolVladzio/schedule_frontend.git', branch: '*/dev',  file_name: 'Jenkinsfiles/dev-Jenkinsfile'],
+  // BACKEND 
+  [name: 'prod-backend',  repo: 'https://github.com/DolVladzio/schedule_backend.git',  branch: '*/main', file_name: 'Jenkinsfiles/Jenkinsfile'],
+  [name: 'dev-backend',   repo: 'https://github.com/DolVladzio/schedule_backend.git',  branch: '*/dev',  file_name: 'Jenkinsfiles/dev-Jenkinsfile']
+]
+
+jobs.each { job ->
+
+  pipelineJob(job.name) {
+    definition {
+      cpsScm {
+        scm {
+          git {
+            remote {
+              url(job.repo)
+            }
+            branches(job.branch)
           }
-          branches('*/main')
         }
+        scriptPath(job.file_name)
       }
-      scriptPath('Jenkinsfile')
     }
   }
 }
 
-pipelineJob('dev-frontend') {
-  definition {
-    cpsScm {
-      scm {
-        git {
-          remote {
-            url('https://github.com/DolVladzio/schedule_frontend.git')
-          }
-          branches('*/dev')
-        }
-      }
-      scriptPath('Jenkinsfile')
-    }
-  }
-}
-// #############################################################################
-// Backend
-pipelineJob('prod-backend') {
-  definition {
-    cpsScm {
-      scm {
-        git {
-          remote {
-            url('https://github.com/DolVladzio/schedule_backend.git')
-          }
-          branches('*/main')
-        }
-      }
-      scriptPath('Jenkinsfile')
-    }
-  }
-}
-
-pipelineJob('dev-backend') {
-  definition {
-    cpsScm {
-      scm {
-        git {
-          remote {
-            url('https://github.com/DolVladzio/schedule_backend.git')
-          }
-          branches('*/dev')
-        }
-      }
-      scriptPath('Jenkinsfile')
-    }
-  }
-}
-// #############################################################################
+// TERRAFORM ###################################################################
+// ANSIBLE #####################################################################
