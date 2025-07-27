@@ -4,6 +4,6 @@
   roles:
     - install_jenkins
   vars:
-    # config_data: "{{ lookup('file', '../schedule-ansible-config/ansible.json') | from_json }}"
+    config_data: "{{ lookup('file', '../schedule-ansible-config/ansible.json') | from_json }}"
     kubeconfig_path: "{{ lookup('env', 'HOME') }}/.kube/config"
     config_data: "{{ lookup('file', './ansible.json') | from_json }}"
