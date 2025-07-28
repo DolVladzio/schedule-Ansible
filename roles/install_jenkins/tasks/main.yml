@@ -36,25 +36,6 @@
         admin:
           username: "{{ item.jenkins_admin_user }}"
           password: "{{ item.jenkins_admin_password }}"
-
-        env:
-        - name: GITHUB_AUTH
-          valueFrom:
-            secretKeyRef:
-              name: jenkins-secrets
-              key: github_auth
-
-        - name: GITHUB_USER
-          valueFrom:
-            secretKeyRef:
-              name: jenkins-github-secrets
-              key: github_user
-        
-        - name: GITHUB_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: jenkins-github-secrets
-              key: github_token
         
         installPlugins:
           - job-dsl
@@ -89,21 +70,21 @@
                         - string:
                             scope: GLOBAL
                             id: github_auth
-                            secret: "${GITHUB_AUTH}"
+                            secret: "{{ github_auth_token }}"
                             description: "GitHub token"
 
                         - usernamePassword:
                             id: github_access
-                            username: "${GITHUB_USER}"
-                            password: "${GITHUB_TOKEN}"
+                            username: "{{ github_user }}"
+                            password: "{{ github_auth_token }}"
                             description: "GitHub Access for private repos"
 
-                        - file:
-                            scope: GLOBAL
-                            id: gcp-sa
-                            fileName: "keys.json"
-                            secretBytes: "${readFile:/run/secrets/gcp/keys.json}"
-                            description: "GCP service account key"
+                        # - file:
+                        #     scope: GLOBAL
+                        #     id: gcp-service-account-file
+                        #     fileName: "keys.json"
+                        #     secretBytes: "${readFile:/run/secrets/gcp/keys.json}"
+                        #     description: "GCP service account key"
 
             welcome-message: |
               jenkins:
