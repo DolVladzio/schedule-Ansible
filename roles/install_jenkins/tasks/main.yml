@@ -1,12 +1,12 @@
 ---
+- name: Debug kubeconfig path
+  debug:
+    msg: "Kubeconfig is: {{ kubeconfig_path }}"
+
 - name: Get GKE {{ jenkins_cluster_name }}'s credentials
   ansible.builtin.shell: >
     gcloud container clusters get-credentials {{ jenkins_cluster_name }}
     --region {{ jenkins_cluster_region }} --project {{ project_id }}
-
-- name: Debug kubeconfig path
-  debug:
-    msg: "Kubeconfig is: {{ kubeconfig_path }}"
 
 - name: Add Jenkins Helm repo
   kubernetes.core.helm_repository:
@@ -79,12 +79,6 @@
                             id: github_auth
                             secret: "${GITHUB_AUTH}"
                             description: "GitHub token"
-
-                        # - file:
-                        #     scope: GLOBAL
-                        #     id: secret-file-id
-                        #     fileName: "keys.json"
-                        #     secretBytes: ""
 
             welcome-message: |
               jenkins:
