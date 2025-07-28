@@ -59,10 +59,6 @@
         installPlugins:
           - job-dsl
           - configuration-as-code
-          - credentials
-          - plain-credentials
-          - credentials-binding
-          - kubernetes-credentials-provider
         
         JCasC:
           enabled: true
@@ -101,6 +97,13 @@
                             username: "${GITHUB_USER}"
                             password: "${GITHUB_TOKEN}"
                             description: "GitHub Access for private repos"
+
+                        - file:
+                            scope: GLOBAL
+                            id: gcp-sa
+                            fileName: "keys.json"
+                            secretBytes: "${readFile:/run/secrets/gcp/keys.json}"
+                            description: "GCP service account key"
 
             welcome-message: |
               jenkins:
