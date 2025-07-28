@@ -36,6 +36,13 @@
         admin:
           username: "{{ item.jenkins_admin_user }}"
           password: "{{ item.jenkins_admin_password }}"
+
+        env:
+        - name: GITHUB_AUTH
+          valueFrom:
+            secretKeyRef:
+              name: jenkins-secrets
+              key: github_auth
         
         installPlugins:
           - job-dsl
@@ -44,9 +51,45 @@
         JCasC:
           enabled: true
           configScripts:
+            credentials: |
+              credentials:
+                system:
+                  domainCredentials:
+                    - credentials:
+                        - string:
+                            scope: GLOBAL
+                            id: project_id
+                            secret: "{{ project_id }}"
+                            description: "GCP project id"
+
+                        - string:
+                            scope: GLOBAL
+                            id: repo_name
+                            secret: "{{ repo_name }}"
+                            description: "GCR repo name"
+
+                        - string:
+                            scope: GLOBAL
+                            id: gcr_name
+                            secret: "{{ gcr_name }}"
+                            description: "GCR name"
+
+                        - string:
+                            scope: GLOBAL
+                            id: github_auth
+                            secret: "${GITHUB_AUTH}"
+                            description: "GitHub token"
+
+                        # - file:
+                        #     scope: GLOBAL
+                        #     id: secret-file-id
+                        #     fileName: "keys.json"
+                        #     secretBytes: ""
+
             welcome-message: |
               jenkins:
                 systemMessage: "Welcome to Jenkins by DolVladzio!"
+
             jobdsl: |
               jobs:
                 - script: >
