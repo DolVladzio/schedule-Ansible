@@ -30,20 +30,14 @@ jobs:
         if: github.event.client_payload.env == 'dev'
         run: |
           git clone --branch ${{ github.event.client_payload.environment }} \
-            https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-ansible-config.git \
+            https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-jenkins-config.git \
             ../schedule-ansible-config
 
       - name: Set main branch of the json config
         if: github.event.client_payload.env == 'prod'
         run: |
-          git clone https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-ansible-config.git \
+          git clone https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/DolVladzio/schedule-jenkins-config.git \
             ../schedule-ansible-config
-
-      - name: Add SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
 
       - name: Install Ansible
         run: |
