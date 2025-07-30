@@ -1,8 +1,0 @@
----
-- name: Install the Jenkins to the 
-  hosts: localhost
-  roles:
-    - install_jenkins
-  vars:
-    config_data: "{{ lookup('file', '../schedule-jenkins-config/ansible.json') | from_json }}"
-    kubeconfig_path: "{{ lookup('env', 'HOME') }}/.kube/config"
