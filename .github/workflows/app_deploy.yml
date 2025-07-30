@@ -93,7 +93,7 @@ jobs:
           echo "BACKEND_IMAGE=${{ github.event.client_payload.backend_image }}" >> $GITHUB_ENV
 
       - name: "Fallback: set backend image to current cluster value"
-        if: github.event.action != 'deploy-backend' && github.event.action != 'deploy-backend'
+        if: github.event.action != 'deploy-backend-prod' && github.event.action != 'deploy-backend-dev'
         run: |
           CURRENT=$(kubectl get deployment backend \
               -n "${{ env.K8S_NAMESPACE_NAME }}" \
